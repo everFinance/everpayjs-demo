@@ -1,0 +1,69 @@
+{
+  "name": "everpayjs-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "serve-build": "serve -s dist",
+    "ui": "vue ui",
+    "everpay": "rm -rf ./src/libs/everpay-js && cp -r ../everpay-js/src ./src/libs/ && mv ./src/libs/src ./src/libs/everpay-js"
+  },
+  "dependencies": {
+    "@walletconnect/web3-provider": "^1.5.2",
+    "arweave": "^1.10.15",
+    "axios": "^0.21.1",
+    "bignumber.js": "^9.0.1",
+    "clipboard": "^2.0.8",
+    "dayjs": "^1.10.6",
+    "ethers": "^5.4.1",
+    "everpay": "^0.3.1",
+    "lodash-es": "^4.17.21",
+    "vue": "^3.2.20",
+    "walletlink": "^2.4.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss7-compat": "^2.1.2",
+    "@types/lodash-es": "^4.17.4",
+    "@types/node": "^16.4.0",
+    "@types/web3": "^1.2.2",
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.3",
+    "@vue/cli": "4.5.13",
+    "@vue/cli-plugin-babel": "4.5.13",
+    "@vue/cli-plugin-eslint": "4.5.13",
+    "@vue/cli-plugin-router": "4.5.13",
+    "@vue/cli-plugin-typescript": "4.5.13",
+    "@vue/cli-plugin-vuex": "4.5.13",
+    "@vue/cli-service": "4.5.13",
+    "@vue/compiler-sfc": "^3.2.20",
+    "@vue/eslint-config-standard": "^6.1.0",
+    "@vue/eslint-config-typescript": "^7.0.0",
+    "autoprefixer": "^9",
+    "babel-loader": "^8.2.2",
+    "compression-webpack-plugin": "4.0.0",
+    "core-js": "3.10.1",
+    "eslint": "^7.24.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-config-standard-with-typescript": "^20.0.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-standard": "^5.0.0",
+    "eslint-plugin-vue": "^7.14.0",
+    "lint-staged": "11.0.1",
+    "postcss": "^7",
+    "sass": "^1.32.11",
+    "sass-loader": "^10",
+    "serve": "^12.0.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "typescript": "^4.3.5"
+  },
+  "lint-staged": {
+    "*.{js,jsx,vue,ts}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
+}

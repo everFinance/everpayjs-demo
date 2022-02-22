@@ -3,7 +3,7 @@ import ethereumLib from './ethereum'
 import arweaveLib from './arweave'
 import {
   GenEverpayParams, GetAccountAsyncParams, HandleChainEventsParams, GetTokenBalanceAsyncParams,
-  GetMinedDepositChainTxHashAsyncParams, GetMinedDepositChainTxHashResult, GetExplorerUrlParams,
+  GetExplorerUrlParams,
   ChainLibAdaptor, ChainLibInterface
 } from './interface'
 import { ConnectAppName } from '@/store/state'
@@ -24,9 +24,6 @@ const chainLibAdaptor: ChainLibAdaptor = {
   },
   async getTokenBalanceAsync (chainType: ChainType, params: GetTokenBalanceAsyncParams): Promise<string> {
     return await getChainLib(chainType).getTokenBalanceAsync(params)
-  },
-  async getMinedDepositChainTxHashAsync (chainType: ChainType, params: GetMinedDepositChainTxHashAsyncParams): Promise<GetMinedDepositChainTxHashResult> {
-    return await getChainLib(chainType).getMinedDepositChainTxHashAsync(params)
   },
   handleChainEvents (chainType: ChainType, params: HandleChainEventsParams): void {
     return getChainLib(chainType).handleChainEvents(params)

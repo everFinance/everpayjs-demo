@@ -6,7 +6,7 @@ import { isProd } from '@/constants'
 import { isUndefined } from 'lodash-es'
 import {
   GenEverpayParams, GetAccountAsyncParams, HandleChainEventsParams, GetTokenBalanceAsyncParams,
-  GetMinedDepositChainTxHashAsyncParams, GetMinedDepositChainTxHashResult, GetExplorerUrlParams, ChainLibInterface
+  GetExplorerUrlParams, ChainLibInterface
 } from './interface'
 import { getChainDecimalByChainType, getTokenAddrByChainType, toBN } from 'everpay/esm/utils/util'
 import { ConnectAppName } from '@/store/state'
@@ -117,22 +117,6 @@ const getTokenBalanceAsync = async (params: GetTokenBalanceAsyncParams): Promise
   return balance
 }
 
-const getMinedDepositChainTxHashAsync = async (params: GetMinedDepositChainTxHashAsyncParams): Promise<GetMinedDepositChainTxHashResult> => {
-  const { depositPendingItem } = params
-  let minedChainTxHash: any = null
-  const isReplaced = false
-  const { chainTxHash } = depositPendingItem
-  const transactionStatusResponse = await arweave.transactions.getStatus(chainTxHash)
-
-  if (transactionStatusResponse.status === 200 && transactionStatusResponse.confirmed !== null) {
-    minedChainTxHash = chainTxHash
-  }
-  return {
-    chainTxHash: minedChainTxHash,
-    isReplaced
-  }
-}
-
 const getExplorerUrl = (params: GetExplorerUrlParams): string => {
   const { type, value } = params
   const prefix = 'https://viewblock.io/arweave'
@@ -151,7 +135,6 @@ const arweaveLib: ChainLibInterface = {
   getDepositGasFeeAsync,
   getAccountAsync,
   getTokenBalanceAsync,
-  getMinedDepositChainTxHashAsync,
   getExplorerUrl,
   handleChainEvents,
   disconnect

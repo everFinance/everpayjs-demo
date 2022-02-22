@@ -8,7 +8,7 @@ import { ConnectAppName } from '@/store/state'
 import WalletLink from 'walletlink'
 import {
   GenEverpayParams, GetAccountAsyncParams, HandleChainEventsParams, GetTokenBalanceAsyncParams,
-  GetMinedDepositChainTxHashAsyncParams, GetMinedDepositChainTxHashResult, GetExplorerUrlParams, ChainLibInterface
+  GetExplorerUrlParams, ChainLibInterface
 } from './interface'
 
 import { getChainDecimalByChainType, getTokenAddrByChainType, toBN } from 'everpay/esm/utils/util'
@@ -242,30 +242,6 @@ const getTokenBalanceAsync = async (params: GetTokenBalanceAsyncParams): Promise
   return balance
 }
 
-const getMinedDepositChainTxHashAsync = async (params: GetMinedDepositChainTxHashAsyncParams): Promise<GetMinedDepositChainTxHashResult> => {
-  const { account, depositPendingItem } = params
-  let minedChainTxHash: any = null
-  let isReplaced = false
-  const { nonce, chainTxHash } = depositPendingItem
-  if (savedWeb3Provider != null) {
-    const transactionRecipt = await savedWeb3Provider.getTransactionReceipt(chainTxHash)
-    if (transactionRecipt?.transactionHash !== undefined) {
-      // 已经打包
-      minedChainTxHash = transactionRecipt.transactionHash
-    } else {
-      const currentNonce = await savedWeb3Provider.getTransactionCount(account)
-      // 被替换、或者加速了
-      if (currentNonce > (nonce as number)) {
-        isReplaced = true
-      }
-    }
-  }
-  return {
-    chainTxHash: minedChainTxHash,
-    isReplaced
-  }
-}
-
 const getExplorerUrl = (params: GetExplorerUrlParams): string => {
   const { type, value } = params
   const prefix = isProd ? 'https://etherscan.io' : 'https://kovan.etherscan.io'
@@ -299,7 +275,6 @@ const ethereumLib: ChainLibInterface = {
   getDepositGasFeeAsync,
   getAccountAsync,
   getTokenBalanceAsync,
-  getMinedDepositChainTxHashAsync,
   getExplorerUrl,
   handleChainEvents,
   disconnect

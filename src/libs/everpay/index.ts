@@ -38,15 +38,6 @@ const initAccountAndEverpayAsync = async (params: InitAccountAndEverpayAsyncPara
     await store.dispatch('resetAccount')
     alert((e as any).message)
   }
-
-  try {
-    if (account !== '' && account !== null && account !== undefined) {
-      await store.dispatch('updateEverpayBalancesAsync')
-      await store.dispatch('updateChainBalancesAsync')
-    }
-  } catch (e) {
-    alert((e as any).message)
-  }
 }
 
 // 连接、更新余额、绑定 chain 相关事件

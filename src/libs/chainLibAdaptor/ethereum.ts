@@ -4,10 +4,11 @@ import Everpay, { ChainType } from 'everpay'
 import { utils, Contract } from 'ethers'
 import { INFURA_ID, isProd } from '@/constants'
 import { isUndefined } from 'lodash-es'
+import { ConnectAppName } from '@/store/state'
 import WalletLink from 'walletlink'
 import {
   GenEverpayParams, GetAccountAsyncParams, HandleChainEventsParams, GetTokenBalanceAsyncParams,
-  GetExplorerUrlParams, ChainLibInterface, ConnectAppName
+  GetMinedDepositChainTxHashAsyncParams, GetMinedDepositChainTxHashResult, GetExplorerUrlParams, ChainLibInterface
 } from './interface'
 
 import { getChainDecimalByChainType, getTokenAddrByChainType, toBN } from 'everpay/esm/utils/util'
@@ -175,7 +176,8 @@ let chainChangeListener: any = null
 let disconnectListener: any = null
 
 const handleChainEvents = (params: HandleChainEventsParams): void => {
-  const { handleChainEventsCallback, connectAppName } = params
+  const { store, handleChainEventsCallback } = params
+  const connectAppName = store.state.connectAppName
   const connectProvider = getConnectProvider(connectAppName)
   if (connectProvider !== undefined) {
     // wallet connect 不需要监听，wallet connect 不支持切换 address/网络（只有在最开始的情况下会发生 address/网络变化的情况）
@@ -192,6 +194,7 @@ const handleChainEvents = (params: HandleChainEventsParams): void => {
         if ((isProd && !isMainnet) ||
         (!isProd && !isKovan)
         ) {
+          await store.dispatch('resetAccount')
           window.location.reload()
         }
       }
@@ -204,6 +207,7 @@ const handleChainEvents = (params: HandleChainEventsParams): void => {
       // walletConnect 的 disconnect 事件需要每次创建实例后，再重新指定
       const connectProvider = getConnectProvider(connectAppName)
       disconnectListener = async () => {
+        await store.dispatch('resetAccount')
         window.location.reload()
       }
       connectProvider.on('disconnect', disconnectListener)
@@ -236,6 +240,30 @@ const getTokenBalanceAsync = async (params: GetTokenBalanceAsyncParams): Promise
     balance = toBN(utils.formatUnits(balanceInWei, decimals)).toString()
   }
   return balance
+}
+
+const getMinedDepositChainTxHashAsync = async (params: GetMinedDepositChainTxHashAsyncParams): Promise<GetMinedDepositChainTxHashResult> => {
+  const { account, depositPendingItem } = params
+  let minedChainTxHash: any = null
+  let isReplaced = false
+  const { nonce, chainTxHash } = depositPendingItem
+  if (savedWeb3Provider != null) {
+    const transactionRecipt = await savedWeb3Provider.getTransactionReceipt(chainTxHash)
+    if (transactionRecipt?.transactionHash !== undefined) {
+      // 已经打包
+      minedChainTxHash = transactionRecipt.transactionHash
+    } else {
+      const currentNonce = await savedWeb3Provider.getTransactionCount(account)
+      // 被替换、或者加速了
+      if (currentNonce > (nonce as number)) {
+        isReplaced = true
+      }
+    }
+  }
+  return {
+    chainTxHash: minedChainTxHash,
+    isReplaced
+  }
 }
 
 const getExplorerUrl = (params: GetExplorerUrlParams): string => {
@@ -271,6 +299,7 @@ const ethereumLib: ChainLibInterface = {
   getDepositGasFeeAsync,
   getAccountAsync,
   getTokenBalanceAsync,
+  getMinedDepositChainTxHashAsync,
   getExplorerUrl,
   handleChainEvents,
   disconnect

@@ -1,9 +1,10 @@
+import { Store } from 'vuex'
+import { State } from '@/store/state'
 import { ChainType } from 'everpay'
-import { ConnectAppName } from '../chainLibAdaptor/interface'
 
 export interface InitAndHandleEventsParams {
   accChainType: ChainType
-  connectAppName: ConnectAppName
+  store: Store<State>
 }
 
 export interface InitAccountAndEverpayAsyncParams extends InitAndHandleEventsParams {

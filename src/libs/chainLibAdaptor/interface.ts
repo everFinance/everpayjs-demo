@@ -1,14 +1,6 @@
+import { Store } from 'vuex'
+import { ConnectAppName, DepositPendingItem, State } from '@/store/state'
 import Everpay, { ChainType, Token } from 'everpay'
-
-export enum ConnectAppName {
-  'Metamask' = 'Metamask',
-  'imToken' = 'imToken',
-  'WalletConnect' = 'Wallet Connect',
-  'CoinbaseWallet' = 'Coinbase Wallet',
-  'BitKeep' = 'BitKeep',
-  'ArConnect' = 'ArConnect',
-  'Finnie' = 'Finnie'
-}
 
 export type HandleChainEventsCallback = (userOperateCausedNoAccounts: boolean) => unknown
 export interface GenEverpayParams {
@@ -22,7 +14,7 @@ export interface GetAccountAsyncParams {
 }
 
 export interface HandleChainEventsParams {
-  connectAppName: ConnectAppName
+  store: Store<State>
   handleChainEventsCallback: HandleChainEventsCallback
 }
 
@@ -32,6 +24,10 @@ export interface GetTokenBalanceAsyncParams {
   token: Token
 }
 
+export interface GetMinedDepositChainTxHashAsyncParams {
+  account: string
+  depositPendingItem: DepositPendingItem
+}
 export interface GetMinedDepositChainTxHashResult {
   chainTxHash: string
   isReplaced: boolean
@@ -47,6 +43,7 @@ export interface ChainLibInterface {
   getDepositGasFeeAsync: () => Promise<string>
   getAccountAsync: (params: GetAccountAsyncParams) => Promise<string>
   getTokenBalanceAsync: (params: GetTokenBalanceAsyncParams) => Promise<string>
+  getMinedDepositChainTxHashAsync: (params: GetMinedDepositChainTxHashAsyncParams) => Promise<GetMinedDepositChainTxHashResult>
   getExplorerUrl: (params: GetExplorerUrlParams) => string
   handleChainEvents: (params: HandleChainEventsParams) => void
   disconnect: (connectAppName: ConnectAppName) => void
@@ -58,6 +55,7 @@ export interface ChainLibAdaptor {
   getDepositGasFeeAsync: (accChainType: ChainType) => Promise<string>
   getAccountAsync: (accChainType: ChainType, params: GetAccountAsyncParams) => Promise<string>
   getTokenBalanceAsync: (accChainType: ChainType, params: GetTokenBalanceAsyncParams) => Promise<string>
+  getMinedDepositChainTxHashAsync: (accChainType: ChainType, params: GetMinedDepositChainTxHashAsyncParams) => Promise<GetMinedDepositChainTxHashResult>
   getExplorerUrl: (chainType: ChainType, params: GetExplorerUrlParams) => string
   handleChainEvents: (accChainType: ChainType, params: HandleChainEventsParams) => void
   disconnect: (accChainType: ChainType, connectAppName: ConnectAppName) => void

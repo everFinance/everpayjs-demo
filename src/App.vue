@@ -1,23 +1,27 @@
 <script lang="ts">
 import { ChainType } from 'everpay'
-import { defineComponent, ref } from 'vue'
-import { ConnectAppName } from './libs/chainLibAdaptor/interface'
-import { getEverpay, initAndHandleEvents } from './libs/everpay'
+import { computed, defineComponent } from 'vue'
+import { useStore } from '@/store'
+import { initAndHandleEvents } from './libs/everpay'
+import { ConnectAppName } from './store/state'
 // import { computed, defineComponent, onMounted, ref } from 'vue'
 // import { getEverpay, initAndHandleEvents } from './libs/everpay'
 // import { ChainType } from 'everpay'
 
 export default defineComponent({
   setup () {
-    let everpay = getEverpay()
-    const account = ref('')
+    const store = useStore()
+    const account = computed(() => store.state.account)
     const handleMetaMaskConnect = async () => {
+      // update first
+      store.commit('updateConnectAppName', ConnectAppName.Metamask)
       await initAndHandleEvents({
-        connectAppName: ConnectAppName.Metamask,
+        store,
         accChainType: ChainType.ethereum
       })
-      everpay = getEverpay()
-      account.value = (everpay as any)._config.account
+      if (store.state.account) {
+        alert('connect_success')
+      }
     }
     return {
       account,

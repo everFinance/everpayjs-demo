@@ -21,6 +21,8 @@
     "everpay": "^0.3.1",
     "lodash-es": "^4.17.21",
     "vue": "^3.2.20",
+    "vuex": "4.0.2",
+    "vuex-persistedstate": "^4.0.0",
     "walletlink": "^2.4.0"
   },
   "devDependencies": {

@@ -23,9 +23,21 @@ export default defineComponent({
         alert('connect_success')
       }
     }
+    const handleArconnectConnect = async () => {
+      // update first
+      store.commit('updateConnectAppName', ConnectAppName.ArConnect)
+      await initAndHandleEvents({
+        store,
+        accChainType: ChainType.arweave
+      })
+      if (store.state.account) {
+        alert('connect_success')
+      }
+    }
     return {
       account,
-      handleMetaMaskConnect
+      handleMetaMaskConnect,
+      handleArconnectConnect
     }
   }
 })
@@ -35,6 +47,9 @@ export default defineComponent({
 <template>
   <button @click="handleMetaMaskConnect">
     connect with metamask
+  </button>
+  <button @click="handleArconnectConnect">
+    connect with ArConnect
   </button>
   <div>account: {{ account }}</div>
 </template>

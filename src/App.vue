@@ -1,10 +1,9 @@
 <script lang="ts">
 import { ChainType } from 'everpay'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useStore } from '@/store'
-import { initAndHandleEvents } from './libs/everpay'
+import { getEverpay, initAndHandleEvents } from './libs/everpay'
 import { ConnectAppName } from './store/state'
-// import { computed, defineComponent, onMounted, ref } from 'vue'
 // import { getEverpay, initAndHandleEvents } from './libs/everpay'
 // import { ChainType } from 'everpay'
 
@@ -12,6 +11,8 @@ export default defineComponent({
   setup () {
     const store = useStore()
     const account = computed(() => store.state.account)
+    const infoResult = ref('')
+
     const handleMetaMaskConnect = async () => {
       // update first
       store.commit('updateConnectAppName', ConnectAppName.Metamask)
@@ -60,12 +61,19 @@ export default defineComponent({
       }
     }
 
+    const getInfo = async () => {
+      const info = await getEverpay().info()
+      infoResult.value = JSON.stringify(info)
+    }
+
     return {
       account,
       handleCoinbaseConnect,
       handleMetaMaskConnect,
       handleArconnectConnect,
-      handleWalletConnectConnect
+      handleWalletConnectConnect,
+      infoResult,
+      getInfo
     }
   }
 })
@@ -86,4 +94,10 @@ export default defineComponent({
     connect with WalletConnect
   </button>
   <div>account: {{ account }}</div>
+  <div>
+    <button @click="getInfo">
+      get info API
+    </button>
+    <div>{{ infoResult }}</div>
+  </div>
 </template>

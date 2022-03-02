@@ -12,6 +12,7 @@ export default defineComponent({
     const store = useStore()
     const account = computed(() => store.state.account)
     const infoResult = ref('')
+    const balanceResult = ref('')
 
     const handleMetaMaskConnect = async () => {
       // update first
@@ -66,6 +67,11 @@ export default defineComponent({
       infoResult.value = JSON.stringify(info)
     }
 
+    const getBalance = async () => {
+      const balance = await getEverpay().balances()
+      balanceResult.value = JSON.stringify(balance)
+    }
+
     return {
       account,
       handleCoinbaseConnect,
@@ -73,7 +79,9 @@ export default defineComponent({
       handleArconnectConnect,
       handleWalletConnectConnect,
       infoResult,
-      getInfo
+      getInfo,
+      balanceResult,
+      getBalance
     }
   }
 })
@@ -99,5 +107,11 @@ export default defineComponent({
       get info API
     </button>
     <div>{{ infoResult }}</div>
+  </div>
+  <div>
+    <button @click="getBalance">
+      get balance API
+    </button>
+    <div>{{ balanceResult }}</div>
   </div>
 </template>

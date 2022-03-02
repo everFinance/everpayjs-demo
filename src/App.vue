@@ -34,10 +34,38 @@ export default defineComponent({
         alert('connect_success')
       }
     }
+
+    // need set isProd to true
+    const handleCoinbaseConnect = async () => {
+      // update first
+      store.commit('updateConnectAppName', ConnectAppName.CoinbaseWallet)
+      await initAndHandleEvents({
+        store,
+        accChainType: ChainType.ethereum
+      })
+      if (store.state.account) {
+        alert('connect_success')
+      }
+    }
+
+    const handleWalletConnectConnect = async () => {
+      // update first
+      store.commit('updateConnectAppName', ConnectAppName.WalletConnect)
+      await initAndHandleEvents({
+        store,
+        accChainType: ChainType.ethereum
+      })
+      if (store.state.account) {
+        alert('connect_success')
+      }
+    }
+
     return {
       account,
+      handleCoinbaseConnect,
       handleMetaMaskConnect,
-      handleArconnectConnect
+      handleArconnectConnect,
+      handleWalletConnectConnect
     }
   }
 })
@@ -50,6 +78,12 @@ export default defineComponent({
   </button>
   <button @click="handleArconnectConnect">
     connect with ArConnect
+  </button>
+  <button @click="handleCoinbaseConnect">
+    connect with Coinbase
+  </button>
+  <button @click="handleWalletConnectConnect">
+    connect with WalletConnect
   </button>
   <div>account: {{ account }}</div>
 </template>

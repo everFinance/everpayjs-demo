@@ -1,1 +1,3 @@
 # everpayjs-demo
+
+yarn serve

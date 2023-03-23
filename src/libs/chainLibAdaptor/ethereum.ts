@@ -65,6 +65,7 @@ const genEverpay = (params: GenEverpayParams): Everpay => {
   const ethConnectedSigner = savedWeb3Provider.getSigner()
   return new Everpay({
     account,
+    chainType: ChainType.ethereum,
     ethConnectedSigner,
     debug: !isProd
   })

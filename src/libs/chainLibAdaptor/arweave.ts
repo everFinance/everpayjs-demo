@@ -26,6 +26,7 @@ const genEverpay = (params: GenEverpayParams): Everpay => {
   const { account } = params
   return new Everpay({
     account,
+    chainType: ChainType.arweave,
     arJWK: 'use_wallet',
     debug: !isProd
   })

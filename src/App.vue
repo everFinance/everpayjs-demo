@@ -82,6 +82,35 @@ export default defineComponent({
       console.log('transfer result', result)
     }
 
+    const bundle = async () => {
+      const bundleData = await getEverpay().getBundleData([
+        {
+          tag: 'bsc-tusdc-0xf17a50ecc5fe5f476de2da5481cdd0f0ffef7712',
+          from: '0x26361130d5d6E798E9319114643AF8c868412859',
+          to: '5NPqYBdIsIpJzPeYixuz7BEH_W7BEk_mb8HxBD3OHXo',
+          amount: '0.001'
+        },
+        {
+          tag: 'bsc-tusdc-0xf17a50ecc5fe5f476de2da5481cdd0f0ffef7712',
+          from: '0x26361130d5d6E798E9319114643AF8c868412859',
+          to: '3tot2o_PcueolCwU0cVCDpBIuPC2c5F5dB0vI9zLmrM',
+          amount: '10'
+        }
+      ])
+      const bundleDataWithSigs = await getEverpay().signBundleData(bundleData)
+      const bundleResult = await getEverpay().bundle({
+        tag: 'ethereum-eth-0x0000000000000000000000000000000000000000',
+        to: '5NPqYBdIsIpJzPeYixuz7BEH_W7BEk_mb8HxBD3OHXo',
+        // bundle 批量转账的 外部转账 amount 可为 0
+        amount: '0',
+        // 特定 data
+        data: {
+          bundle: bundleDataWithSigs
+        }
+      })
+      console.log(bundleResult)
+    }
+
     const disconnect = async () => {
       disconnectWebsite(store)
     }
@@ -106,6 +135,7 @@ export default defineComponent({
       balanceResult,
       getBalance,
       transfer,
+      bundle,
       disconnect
     }
   }
@@ -120,12 +150,12 @@ export default defineComponent({
   <button @click="handleArconnectConnect">
     connect with ArConnect
   </button>
-  <button @click="handleCoinbaseConnect">
+  <!-- <button @click="handleCoinbaseConnect">
     connect with Coinbase
   </button>
   <button @click="handleWalletConnectConnect">
     connect with WalletConnect
-  </button>
+  </button> -->
   <div>account: {{ account }}</div>
   <div>
     <button @click="getInfo">
@@ -142,6 +172,11 @@ export default defineComponent({
   <div>
     <button @click="transfer">
       transfer API
+    </button>
+  </div>
+  <div>
+    <button @click="bundle">
+      bundle API
     </button>
   </div>
   <div>

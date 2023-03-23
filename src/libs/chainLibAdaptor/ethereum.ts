@@ -73,14 +73,14 @@ const genEverpay = (params: GenEverpayParams): Everpay => {
 const checkNetworkAsync = async (provider: Web3Provider): Promise<void> => {
   const network = await provider.getNetwork()
   const isMainnet = network.chainId === 1
-  const isKovan = network.chainId === 42
+  const isKovan = network.chainId === 5
 
   if (isProd && !isMainnet) {
     throw new Error('pls_change_to_mainnet')
   }
 
   if (!isProd && !isKovan) {
-    throw new Error('pls_change_to_kovan')
+    throw new Error('pls_change_to_goerli')
   }
 }
 

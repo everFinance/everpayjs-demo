@@ -1892,6 +1892,11 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.178.tgz#341f6d2247db528d4a13ddbb374bcdc80406f4f8"
   integrity sha512-0d5Wd09ItQWH1qFbEyQ7oTQ3GZrMfth5JkbN3EvTKLXcHLRDSXeLnlvlOn0wvxVIwK5o2M8JzP/OWz7T3NRsbw==
 
+"@types/lodash@^4.14.180":
+  version "4.14.182"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.182.tgz#05301a4d5e62963227eaafe0ce04dd77c54ea5c2"
+  integrity sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==
+
 "@types/long@^4.0.0":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9"
@@ -6582,17 +6587,18 @@ eventsource@^1.0.7:
   dependencies:
     original "^1.0.0"
 
-everpay@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/everpay/-/everpay-0.3.1.tgz#d63723d8f97a5c9c7d30ef592a1de0f02f2ddf12"
-  integrity sha512-jYTpP8tZ4yATnEfsNHJysNvBQa8yuNNGVKf8JAe03H4GZWx6lnWF5Glv55dghAu5/vRzVnknyty9OSsyeSOEJQ==
+everpay@0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/everpay/-/everpay-0.6.1.tgz#f17d030b3cca6eb333818a8745f01d8ded93533c"
+  integrity sha512-ZrH1vBh86gxS/NaqxdmeWEB7f31szBx+NDGs9sdtsx0DM6t5hJub7JSXD7MaM4h/NWcsrYZBxL63LCydLZlsrw==
   dependencies:
+    "@types/lodash" "^4.14.180"
     arweave "^1.10.16"
     axios "^0.21.1"
     bignumber.js "^9.0.1"
     ethers "^5.4.6"
     keccak "^3.0.2"
-    lodash-es "^4.17.21"
+    lodash "^4.17.21"
     query-string "^7.0.1"
     uuid "^8.3.2"
 

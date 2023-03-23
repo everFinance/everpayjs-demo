@@ -1,8 +1,8 @@
 <script lang="ts">
 import { ChainType } from 'everpay'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, onMounted } from 'vue'
 import { useStore } from '@/store'
-import { getEverpay, initAndHandleEvents } from './libs/everpay'
+import { disconnectWebsite, getEverpay, initAndHandleEvents } from './libs/everpay'
 import { ConnectAppName } from './store/state'
 // import { getEverpay, initAndHandleEvents } from './libs/everpay'
 // import { ChainType } from 'everpay'
@@ -11,6 +11,7 @@ export default defineComponent({
   setup () {
     const store = useStore()
     const account = computed(() => store.state.account)
+    const accChainType = computed(() => store.state.accChainType)
     const infoResult = ref('')
     const balanceResult = ref('')
 
@@ -72,6 +73,28 @@ export default defineComponent({
       balanceResult.value = JSON.stringify(balance)
     }
 
+    const transfer = async () => {
+      const result = await getEverpay().transfer({
+        tag: 'bsc-tusdc-0xf17a50ecc5fe5f476de2da5481cdd0f0ffef7712',
+        amount: '1',
+        to: '3tot2o_PcueolCwU0cVCDpBIuPC2c5F5dB0vI9zLmrM'
+      })
+      console.log('transfer result', result)
+    }
+
+    const disconnect = async () => {
+      disconnectWebsite(store)
+    }
+
+    onMounted(() => {
+      if (account.value && accChainType.value) {
+        initAndHandleEvents({
+          accChainType: accChainType.value as ChainType,
+          store
+        })
+      }
+    })
+
     return {
       account,
       handleCoinbaseConnect,
@@ -81,7 +104,9 @@ export default defineComponent({
       infoResult,
       getInfo,
       balanceResult,
-      getBalance
+      getBalance,
+      transfer,
+      disconnect
     }
   }
 })
@@ -113,5 +138,15 @@ export default defineComponent({
       get balance API
     </button>
     <div>{{ balanceResult }}</div>
+  </div>
+  <div>
+    <button @click="transfer">
+      transfer API
+    </button>
+  </div>
+  <div>
+    <button @click="disconnect">
+      disconnect
+    </button>
   </div>
 </template>

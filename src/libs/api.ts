@@ -1,9 +1,54 @@
 import axios from 'axios'
-import { random } from 'lodash-es'
+import random from 'lodash/random'
 
 interface GetPstTokenBalanceParams {
   contractId: string
   address: string
+}
+
+export const isArweaveInteractionConfirmed = async (interactionTxId: string): Promise<boolean> => {
+  const data = JSON.stringify({
+    query: `{
+    transactions(
+         tags: [
+          {
+              name: "Sequencer-Tx-Id"
+              values: ["${interactionTxId}"]
+          }
+      ]
+    ) {
+      pageInfo {
+        hasNextPage
+      }
+      edges {
+        cursor
+        node {
+          id
+          block {
+              id
+              timestamp
+              height
+          }
+        }
+      }
+    }
+  }`,
+    variables: {}
+  })
+  const config = {
+    method: 'POST',
+    url: 'https://arweave.net/graphql',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: data
+  }
+  const response = await axios(config as any)
+  const result = response.data
+  if ((Boolean((result?.data?.transactions?.edges?.length))) && (Boolean((result?.data?.transactions?.edges[0]?.node?.block?.height)))) {
+    return true
+  }
+  return false
 }
 
 export const getPstTokenBalance = async (params: GetPstTokenBalanceParams): Promise<string> => {

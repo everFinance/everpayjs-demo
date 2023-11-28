@@ -15,9 +15,6 @@
     "outDir": "dist",
     "rootDir": "src",
     "baseUrl": ".",
-    "types": [
-      "webpack-env"
-    ],
     "paths": {
       "@/*": [
         "src/*"

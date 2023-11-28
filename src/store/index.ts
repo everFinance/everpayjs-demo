@@ -19,7 +19,10 @@ export default createStore<State>({
     },
     updateConnectAppName (state, connectAppName) {
       state.connectAppName = connectAppName
-    }
+    },
+    updateRegistered (state, registered) {
+      state.registered = registered
+    },
   },
 
   getters: {
@@ -31,6 +34,8 @@ export default createStore<State>({
     resetAccount ({ state, commit }) {
       commit('updateAccount', '')
       commit('updateConnectAppName', '')
+      commit('updateAccChainType', '')
+      commit('updateRegistered', false)
     }
   },
 

@@ -9,16 +9,25 @@ import { Store } from 'vuex'
 
 let everpay = new Everpay({ debug: !isProd })
 
-const setEverpay = (chainType: ChainType, params: GenEverpayParams): void => {
+const setEverpay = async (chainType: ChainType, params: GenEverpayParams): Promise<void> => {
   const { account } = params
   if (account === '') {
     everpay = new Everpay({
       account,
+      chainType,
       debug: !isProd
     })
   } else {
-    everpay = chainLibAdaptor.genEverpay(chainType, params)
+    everpay = await chainLibAdaptor.genEverpay(chainType, params)
   }
+}
+
+export const setSmartAccountEverpay = (email: string): void => {
+  everpay = new Everpay({
+    account: email,
+    isSmartAccount: true,
+    debug: !isProd
+  })
 }
 
 export const getEverpay = (): Everpay => everpay
@@ -27,16 +36,30 @@ const initAccountAndEverpayAsync = async (params: InitAccountAndEverpayAsyncPara
   const { userOperateCausedNoAccounts, store, accChainType } = params
   const connectAppName = store.state.connectAppName
   let account = ''
+  let isRegistered = false
   try {
     // 先更新 accChainType，来标识 充值、提现页面的 Token 筛选
     store.commit('updateAccChainType', accChainType) // 钱包类型
-    account = await chainLibAdaptor.getAccountAsync(accChainType, { connectAppName, userOperateCausedNoAccounts })
-    setEverpay(accChainType, { connectAppName, account })
+    account = await chainLibAdaptor.getAccountAsync(accChainType, { connectAppName, userOperateCausedNoAccounts, chainType: accChainType })
+    await setEverpay(accChainType, { connectAppName, account })
     store.commit('updateAccount', account)
     store.commit('updateConnectAppName', connectAppName)
-  } catch (e) {
+  } catch (e: any) {
     await store.dispatch('resetAccount')
-    alert((e as any).message)
+    alert(e.message)
+  }
+
+  if (account !== '' && account !== null && account !== undefined) {
+    try {
+      await getEverpay().getAccountData()
+      isRegistered = true
+    } catch {
+      isRegistered = false
+    }
+
+    store.commit('updateRegistered', isRegistered)
+    store.commit('updateAccount', account)
+    store.commit('updateConnectAppName', connectAppName)
   }
 }
 
@@ -63,7 +86,7 @@ export const initAndHandleEvents = async (params: InitAndHandleEventsParams): Pr
 export const disconnectWebsite = async (store: Store<State>): Promise<void> => {
   const { accChainType, connectAppName } = store.state
   chainLibAdaptor.disconnect(accChainType, connectAppName)
-  setEverpay(ChainType.ethereum, {
+  await setEverpay(ChainType.ethereum, {
     account: '',
     connectAppName: ConnectAppName.Metamask
   })

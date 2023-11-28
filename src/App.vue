@@ -1,8 +1,9 @@
 <script lang="ts">
 import { ChainType } from 'everpay'
+import { isSmartAccount } from 'everpay/esm/utils/util'
 import { computed, defineComponent, ref, onMounted } from 'vue'
 import { useStore } from '@/store'
-import { disconnectWebsite, getEverpay, initAndHandleEvents } from './libs/everpay'
+import { disconnectWebsite, getEverpay, initAndHandleEvents, setSmartAccountEverpay } from './libs/everpay'
 import { ConnectAppName } from './store/state'
 // import { getEverpay, initAndHandleEvents } from './libs/everpay'
 // import { ChainType } from 'everpay'
@@ -36,6 +37,15 @@ export default defineComponent({
       if (store.state.account) {
         alert('connect_success')
       }
+    }
+
+    const handleEverIdLogin = async () => {
+      const account = await getEverpay().smartAccountAuth('https://app-dev.permaswap.network/permalogo.svg')
+      console.log('account', account)
+      setSmartAccountEverpay(account)
+      store.commit('updateRegistered', true)
+      store.commit('updateAccount', account)
+      alert('login_success')
     }
 
     // need set isProd to true
@@ -98,17 +108,26 @@ export default defineComponent({
         }
       ])
       const bundleDataWithSigs = await getEverpay().signBundleData(bundleData)
-      const bundleResult = await getEverpay().bundle({
-        tag: 'ethereum-eth-0x0000000000000000000000000000000000000000',
-        to: '5NPqYBdIsIpJzPeYixuz7BEH_W7BEk_mb8HxBD3OHXo',
-        // bundle 批量转账的 外部转账 amount 可为 0
-        amount: '0',
-        // 特定 data
-        data: {
-          bundle: bundleDataWithSigs
-        }
-      })
-      console.log(bundleResult)
+      console.log('bundleDataWithSigs', bundleDataWithSigs)
+      if (isSmartAccount(store.state.account)) {
+        alert('Not support EverID cross domain bundle yet')
+        return
+      }
+      try {
+        const bundleResult = await getEverpay().bundle({
+          tag: 'ethereum-eth-0x0000000000000000000000000000000000000000',
+          to: '5NPqYBdIsIpJzPeYixuz7BEH_W7BEk_mb8HxBD3OHXo',
+          // bundle 批量转账的 外部转账 amount 可为 0
+          amount: '0',
+          // 特定 data
+          data: {
+            bundle: bundleDataWithSigs
+          }
+        })
+        console.log(bundleResult)
+      } catch (e) {
+        console.log(e)
+      }
     }
 
     const disconnect = async () => {
@@ -116,12 +135,18 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      if (account.value && accChainType.value) {
-        initAndHandleEvents({
-          accChainType: accChainType.value as ChainType,
-          store
-        })
-      }
+      if (account.value) {
+          if (isSmartAccount(account.value)) {
+            setSmartAccountEverpay(account.value)
+            return
+          }
+          if (accChainType) {
+            initAndHandleEvents({
+              accChainType: accChainType.value as ChainType,
+              store,
+            })
+          }
+        }
     })
 
     return {
@@ -130,6 +155,7 @@ export default defineComponent({
       handleMetaMaskConnect,
       handleArconnectConnect,
       handleWalletConnectConnect,
+      handleEverIdLogin,
       infoResult,
       getInfo,
       balanceResult,
@@ -150,6 +176,10 @@ export default defineComponent({
   <button @click="handleArconnectConnect">
     connect with ArConnect
   </button>
+  <button @click="handleEverIdLogin">
+    connect with EverID
+  </button>
+
   <!-- <button @click="handleCoinbaseConnect">
     connect with Coinbase
   </button>

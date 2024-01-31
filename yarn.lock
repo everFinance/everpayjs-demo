@@ -4199,10 +4199,10 @@ events@^3.0.0, events@^3.3.0:
   resolved "https://registry.npmmirror.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
 
-everpay@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/everpay/-/everpay-1.0.0.tgz#f3d60350cc1f034962f29f4955bed2e4245b161f"
-  integrity sha512-nKPvMpZyxBoCwscJQvOCGfBmvdAQNA+O0ac0R1HqlyDFY1TTtX4Rhx9VCl1m1GaU07A/HZrUPkEva3meyqoHpg==
+everpay@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/everpay/-/everpay-1.2.0.tgz#338135130c552a05f7c67575f466b12956d946b0"
+  integrity sha512-eqgw9rdrcCM3R2eU5wZR8alffyGtfTjzPNMI34nR6Nz/C9FcOJZ9nmsdHOJvLMzdhm66WNeJYIufZFM8qDbaMQ==
   dependencies:
     "@types/crypto-js" "^4.2.1"
     "@types/lodash" "^4.14.180"

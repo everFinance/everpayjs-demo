@@ -40,9 +40,9 @@ export default defineComponent({
     }
 
     const handleEverIdLogin = async () => {
-      const account = await getEverpay().smartAccountAuth('https://app-dev.permaswap.network/permalogo.svg')
-      console.log('account', account)
-      setSmartAccountEverpay(account)
+      const authResult = await getEverpay().smartAccountAuth('https://app-dev.permaswap.network/permalogo.svg')
+      console.log('account', authResult.account)
+      setSmartAccountEverpay(authResult.account)
       store.commit('updateRegistered', true)
       store.commit('updateAccount', account)
       alert('login_success')
